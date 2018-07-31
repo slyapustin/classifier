@@ -5,7 +5,13 @@ Django based app to train and use Tensorflow classifier
  - Create virtual env `python3 -m venv .env`
  - Activate virtual environment `source .env/bin/activate`
  - Install requrements: `pip install -r app/requirements.txt`
- - Run demo script `python3 app/train.py`
+ - Train model `python3 app/train.py`
+ - Use classifier `python3 app/test.py`
+
+```
+Enter sentence to test: Hey, Siri!
+Category is: greeting.
+```
 
 
 # Some helpful links

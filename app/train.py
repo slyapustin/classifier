@@ -5,27 +5,24 @@ import numpy as np
 import tflearn
 
 from config import MODEL_PATH, TENSORBOARD_PATH
-from utils import init_network, get_tokenized_words
+from utils import init_network, get_tokenized_words, get_categories, get_words
 
 # read the json file and load the training data
 with open('sample_data.json') as json_data:
     data = json.load(json_data)
 
 # get a list of all categories to train for
-categories = list(data.keys())
-words = []
+categories = get_categories()
+words = get_words()
 
 # a list of tuples with words in the sentence and category name
 docs = []
 
-for category in data.keys():
+for category in categories:
     for sentence in data[category]:
         sentence_words = get_tokenized_words(sentence)
         print("tokenized words: ", sentence_words)
-        words.extend(sentence_words)
         docs.append((sentence_words, category))
-
-words = sorted(list(set(words)))
 
 # create our training data
 training = []
@@ -52,43 +49,17 @@ for doc in docs:
 random.shuffle(training)
 training = np.array(training)
 
-# trainX contains the Bag of words and train_y contains the label/ category
+# x_inputs contains the Bag of words and y_targets contains the category
 x_inputs = list(training[:, 0])
 y_targets = list(training[:, 1])
 
 # Define model and setup TensorBoard
-network = init_network(x_inputs, y_targets)
+x_size = len(x_inputs[0])
+y_size = len(y_targets[0])
+network = init_network(x_size, y_size)
 model = tflearn.DNN(network, tensorboard_dir=TENSORBOARD_PATH)
 # Start training (apply gradient descent algorithm)
 model.fit(x_inputs, y_targets, n_epoch=1000, batch_size=8, show_metric=True)
 model.save(MODEL_PATH)
 
-
-# a method that takes in a sentence and list of all words
-# and returns the data in a form the can be fed to tensorflow
-def get_tf_record(sentence):
-    global words
-    # Tokenize the pattern and stem each word
-    sentence_words = get_tokenized_words(sentence)
-
-    bag_of_words = [0]*len(words)
-    for s in sentence_words:
-        for i, w in enumerate(words):
-            if w == s:
-                bag_of_words[i] = 1
-
-    return np.array(bag_of_words)
-
-
-# Let's test our model
-sentences = [
-    "what time is it?",
-    "I gotta go now",
-    "do you know the time now?",
-    "you must be a couple of years older then her!",
-    "Hi there!",
-]
-
-for sentence in sentences:
-    # we can start to predict the results for each of the 4 sentences
-    print(sentence, ' = ', categories[np.argmax(model.predict([get_tf_record(sentence)]))])
+print('Training complete.')
