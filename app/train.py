@@ -5,19 +5,15 @@ import unicodedata
 
 import nltk
 import numpy as np
-import tensorflow as tf
 import tflearn
-from config import MODEL_PATH, TENSORBOARD_PATH
 from nltk.stem.lancaster import LancasterStemmer
+
+from config import MODEL_PATH, TENSORBOARD_PATH
+from utils import init_network
 
 # a table structure to hold the different punctuation used
 tbl = dict.fromkeys(i for i in range(sys.maxunicode)
                     if unicodedata.category(chr(i)).startswith('P'))
-
-
-# method to remove punctuations from sentences.
-def remove_punctuation(text):
-    return text.translate(tbl)
 
 # initialize the stemmer
 stemmer = LancasterStemmer()
@@ -36,7 +32,7 @@ docs = []
 for category in data.keys():
     for sentence in data[category]:
         # remove any punctuation from the sentence
-        punctuation_free_sentence = remove_punctuation(sentence)
+        punctuation_free_sentence = sentence.translate(tbl)
         print(punctuation_free_sentence)
         # extract words from each sentence and append to the word list
         sentence_words = nltk.word_tokenize(punctuation_free_sentence)
@@ -84,17 +80,10 @@ training = np.array(training)
 train_x = list(training[:, 0])
 train_y = list(training[:, 1])
 
-# reset underlying graph data
-tf.reset_default_graph()
-# Build neural network
-net = tflearn.input_data(shape=[None, len(train_x[0])])
-net = tflearn.fully_connected(net, 8)
-net = tflearn.fully_connected(net, 8)
-net = tflearn.fully_connected(net, len(train_y[0]), activation='softmax')
-net = tflearn.regression(net)
+network = init_network(train_x, train_y)
 
 # Define model and setup TensorBoard
-model = tflearn.DNN(net, tensorboard_dir=TENSORBOARD_PATH)
+model = tflearn.DNN(network, tensorboard_dir=TENSORBOARD_PATH)
 
 # Start training (apply gradient descent algorithm)
 model.fit(train_x, train_y, n_epoch=1000, batch_size=8, show_metric=True)
