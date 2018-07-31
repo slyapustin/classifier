@@ -1,5 +1,17 @@
+import sys
+import unicodedata
+
+import nltk
 import tensorflow as tf
 import tflearn
+from nltk.stem.lancaster import LancasterStemmer
+
+# initialize the stemmer
+stemmer = LancasterStemmer()
+
+# a table structure to hold the different punctuation used
+tbl = dict.fromkeys(i for i in range(sys.maxunicode)
+                    if unicodedata.category(chr(i)).startswith('P'))
 
 
 def init_network(X_inputs, Y_targets):
@@ -13,3 +25,11 @@ def init_network(X_inputs, Y_targets):
     net = tflearn.regression(net)
 
     return net
+
+
+def get_tokenize_words(text):
+    """
+    Remove any punctuation from the text and return list of lowercase words
+    """
+
+    return [stemmer.stem(word.lower()) for word in nltk.word_tokenize(text.translate(tbl))]
