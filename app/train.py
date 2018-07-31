@@ -5,7 +5,7 @@ import numpy as np
 import tflearn
 
 from config import MODEL_PATH, TENSORBOARD_PATH
-from utils import init_network, get_tokenize_words
+from utils import init_network, get_tokenized_words
 
 # read the json file and load the training data
 with open('sample_data.json') as json_data:
@@ -20,7 +20,7 @@ docs = []
 
 for category in data.keys():
     for sentence in data[category]:
-        sentence_words = get_tokenize_words(sentence)
+        sentence_words = get_tokenized_words(sentence)
         print("tokenized words: ", sentence_words)
         words.extend(sentence_words)
         docs.append((sentence_words, category))
@@ -69,7 +69,7 @@ model.save(MODEL_PATH)
 def get_tf_record(sentence):
     global words
     # Tokenize the pattern and stem each word
-    sentence_words = get_tokenize_words(sentence)
+    sentence_words = get_tokenized_words(sentence)
 
     bag_of_words = [0]*len(words)
     for s in sentence_words:

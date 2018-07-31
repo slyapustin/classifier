@@ -27,7 +27,7 @@ def init_network(X_inputs, Y_targets):
     return net
 
 
-def get_tokenize_words(text):
+def get_tokenized_words(text):
     """
     Remove any punctuation from the text and return list of lowercase words
     """
