@@ -9,6 +9,8 @@ import tflearn
 from nltk.stem.lancaster import LancasterStemmer
 
 # initialize the stemmer
+from config import LANGUAGE
+
 stemmer = LancasterStemmer()
 
 # a table structure to hold the different punctuation used
@@ -34,7 +36,7 @@ def get_tokenized_words(text):
     Remove any punctuation from the text and return list of lowercase words
     """
 
-    return [stemmer.stem(word.lower()) for word in nltk.word_tokenize(text.translate(tbl))]
+    return [stemmer.stem(word.lower()) for word in nltk.word_tokenize(text.translate(tbl), language=LANGUAGE)]
 
 
 def get_categories():
