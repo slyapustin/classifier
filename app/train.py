@@ -1,5 +1,5 @@
-import os
 import json
+import os
 import random
 import sys
 import unicodedata
@@ -35,17 +35,17 @@ words = []
 # a list of tuples with words in the sentence and category name
 docs = []
 
-for each_category in data.keys():
-    for each_sentence in data[each_category]:
+for category in data.keys():
+    for sentence in data[category]:
         # remove any punctuation from the sentence
-        each_sentence = remove_punctuation(each_sentence)
-        print(each_sentence)
+        punctuation_free_sentence = remove_punctuation(sentence)
+        print(punctuation_free_sentence)
         # extract words from each sentence and append to the word list
-        w = nltk.word_tokenize(each_sentence)
+        sentence_words = nltk.word_tokenize(punctuation_free_sentence)
 
-        print("tokenized words: ", w)
-        words.extend(w)
-        docs.append((w, each_category))
+        print("tokenized words: ", sentence_words)
+        words.extend(sentence_words)
+        docs.append((sentence_words, category))
 
 # stem and lower each word and remove duplicates
 words = [stemmer.stem(w.lower()) for w in words]
@@ -98,17 +98,11 @@ net = tflearn.regression(net)
 
 # Define model and setup tensorboard
 model = tflearn.DNN(net, tensorboard_dir=os.path.join(MODEL_TRAINED_DATA_PATH, 'tflearn_logs'))
+
 # Start training (apply gradient descent algorithm)
 model.fit(train_x, train_y, n_epoch=1000, batch_size=8, show_metric=True)
 model.save(os.path.join(MODEL_TRAINED_DATA_PATH, 'model.tflearn'))
 
-
-# let's test the model for a few sentences:
-# the first two sentences are used for training, and the last two sentences are not present in the training data.
-sent_1 = "what time is it?"
-sent_2 = "I gotta go now"
-sent_3 = "do you know the time now?"
-sent_4 = "you must be a couple of years older then her!"
 
 # a method that takes in a sentence and list of all words
 # and returns the data in a form the can be fed to tensorflow
@@ -130,8 +124,15 @@ def get_tf_record(sentence):
     return(np.array(bow))
 
 
-# we can start to predict the results for each of the 4 sentences
-print(categories[np.argmax(model.predict([get_tf_record(sent_1)]))])
-print(categories[np.argmax(model.predict([get_tf_record(sent_2)]))])
-print(categories[np.argmax(model.predict([get_tf_record(sent_3)]))])
-print(categories[np.argmax(model.predict([get_tf_record(sent_4)]))])
+# Let's test our model
+sentences = [
+    "what time is it?",
+    "I gotta go now",
+    "do you know the time now?",
+    "you must be a couple of years older then her!",
+    "Hi there!",
+]
+
+for sentence in sentences:
+    # we can start to predict the results for each of the 4 sentences
+    print(sentence, ' = ', categories[np.argmax(model.predict([get_tf_record(sentence)]))])
