@@ -1,5 +1,4 @@
 import json
-import os
 import random
 import sys
 import unicodedata
@@ -8,9 +7,8 @@ import nltk
 import numpy as np
 import tensorflow as tf
 import tflearn
+from config import MODEL_PATH, TENSORBOARD_PATH
 from nltk.stem.lancaster import LancasterStemmer
-
-MODEL_TRAINED_DATA_PATH = 'model_data'
 
 # a table structure to hold the different punctuation used
 tbl = dict.fromkeys(i for i in range(sys.maxunicode)
@@ -27,11 +25,11 @@ stemmer = LancasterStemmer()
 # read the json file and load the training data
 with open('sample_data.json') as json_data:
     data = json.load(json_data)
-    print(data)
 
 # get a list of all categories to train for
 categories = list(data.keys())
 words = []
+
 # a list of tuples with words in the sentence and category name
 docs = []
 
@@ -56,7 +54,6 @@ print(docs)
 
 # create our training data
 training = []
-output = []
 # create an empty array for our output
 output_empty = [0] * len(categories)
 
@@ -96,12 +93,12 @@ net = tflearn.fully_connected(net, 8)
 net = tflearn.fully_connected(net, len(train_y[0]), activation='softmax')
 net = tflearn.regression(net)
 
-# Define model and setup tensorboard
-model = tflearn.DNN(net, tensorboard_dir=os.path.join(MODEL_TRAINED_DATA_PATH, 'tflearn_logs'))
+# Define model and setup TensorBoard
+model = tflearn.DNN(net, tensorboard_dir=TENSORBOARD_PATH)
 
 # Start training (apply gradient descent algorithm)
 model.fit(train_x, train_y, n_epoch=1000, batch_size=8, show_metric=True)
-model.save(os.path.join(MODEL_TRAINED_DATA_PATH, 'model.tflearn'))
+model.save(MODEL_PATH)
 
 
 # a method that takes in a sentence and list of all words
