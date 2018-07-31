@@ -27,9 +27,6 @@ for category in data.keys():
 
 words = sorted(list(set(words)))
 
-print(words)
-print(docs)
-
 # create our training data
 training = []
 # create an empty array for our output
@@ -37,14 +34,12 @@ output_empty = [0] * len(categories)
 
 
 for doc in docs:
-    # initialize our bag of words(bow) for each document in the list
-    bag_of_words = []
+    # initialize our bag of words for each document in the list
     # list of tokenized words for the pattern
     token_words = doc[0]
 
-    # create our bag of words array
-    for w in words:
-        bag_of_words.append(1) if w in token_words else bag_of_words.append(0)
+    # Create bag of words array
+    bag_of_words = [1 if word in token_words else 0 for word in words]
 
     output_row = list(output_empty)
     output_row[categories.index(doc[1])] = 1
@@ -61,11 +56,9 @@ training = np.array(training)
 x_inputs = list(training[:, 0])
 y_targets = list(training[:, 1])
 
-network = init_network(x_inputs, y_targets)
-
 # Define model and setup TensorBoard
+network = init_network(x_inputs, y_targets)
 model = tflearn.DNN(network, tensorboard_dir=TENSORBOARD_PATH)
-
 # Start training (apply gradient descent algorithm)
 model.fit(x_inputs, y_targets, n_epoch=1000, batch_size=8, show_metric=True)
 model.save(MODEL_PATH)
@@ -73,8 +66,6 @@ model.save(MODEL_PATH)
 
 # a method that takes in a sentence and list of all words
 # and returns the data in a form the can be fed to tensorflow
-
-
 def get_tf_record(sentence):
     global words
     # Tokenize the pattern and stem each word
