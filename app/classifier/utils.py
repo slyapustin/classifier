@@ -6,10 +6,8 @@ import nltk
 import numpy as np
 import tensorflow as tf
 import tflearn
+from django.conf import settings
 from nltk.stem.lancaster import LancasterStemmer
-
-# initialize the stemmer
-from config import LANGUAGE
 
 stemmer = LancasterStemmer()
 
@@ -36,11 +34,11 @@ def get_tokenized_words(text):
     Remove any punctuation from the text and return list of lowercase words
     """
 
-    return [stemmer.stem(word.lower()) for word in nltk.word_tokenize(text.translate(tbl), language=LANGUAGE)]
+    return [stemmer.stem(word.lower()) for word in nltk.word_tokenize(text.translate(tbl), language=settings.CLASSIFIER_LANGUAGE)]
 
 
 def get_categories():
-    with open('sample_data.json') as json_data:
+    with open(settings.CLASSIFIER_DATA_SET) as json_data:
         data = json.load(json_data)
 
     return list(data.keys())
@@ -49,7 +47,7 @@ def get_categories():
 def get_words():
     # Get ordered list of unique words which was used to train model
     words_list = []
-    with open('sample_data.json') as json_data:
+    with open(settings.CLASSIFIER_DATA_SET) as json_data:
         data = json.load(json_data)
 
     for category in data.keys():

@@ -1,0 +1,17 @@
+<html>
+
+<head>
+</head>
+
+<body>
+{% if text %}
+  <strong>{{ text }}</strong> is <strong>{{ category }}</strong>
+{% endif %}
+<form>
+  <input type="text" name="text">
+  <input type="submit">
+</form>
+
+<a href="{% url 'classifier:train' %}">Re-Train</a>
+</body>
+</html>
