@@ -14,6 +14,6 @@ class IndexView(TemplateView):
             context['text'] = text
             context['category'] = predict_category(text)
 
-        context['train'] = Train.objects.filter(finished__isnull=False).order_by('finished').first()
+        context['train'] = Train.objects.filter(finished__isnull=False).order_by('-finished').first()
 
         return context

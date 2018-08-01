@@ -5,14 +5,15 @@ from classifier.models import Category, Sentence, Train
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('title', 'created')
+    list_display = ('title', 'created', 'processed')
     search_fields = ('title', )
+    list_filter = ('created', 'processed')
 
 
 class SentenceAdmin(admin.ModelAdmin):
-    list_display = ('category', 'text', 'created')
+    list_display = ('category', 'text', 'created', 'processed')
     search_fields = ('text', )
-    list_filter = ('created', 'category')
+    list_filter = ('created', 'category', 'processed')
 
 
 class TrainAdmin(admin.ModelAdmin):

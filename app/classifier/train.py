@@ -1,4 +1,5 @@
 import json
+import logging
 import random
 
 import numpy as np
@@ -6,14 +7,30 @@ import tflearn
 from django.conf import settings
 from django.utils import timezone
 
-from classifier.models import Sentence, Train
+from classifier.models import Sentence, Train, Category
 from classifier.utils import init_network, get_tokenized_words, get_categories, get_words
+
+logger = logging.getLogger(__name__)
 
 
 def train():
     # get a list of all categories to train for
-    categories = get_categories()
-    words = get_words()
+
+    # Check if there unprocessed categories or sentences
+    if not Category.objects.filter(processed=False).exists() and not Sentence.objects.filter(processed=False).exists():
+        logger.info('No unprocessed categories or sentences')
+        return
+
+    # Mark all as processed now
+    categories_qs = Category.objects.all()
+    categories_qs.filter(processed=False).update(processed=True)
+
+    sentences_qs = Sentence.objects.all()
+    sentences_qs.filter(processed=False).update(processed=True)
+
+    # Use same QuerySets to train models
+    categories = get_categories(qs=categories_qs)
+    words = get_words(qs=sentences_qs)
 
     train_obj = Train.objects.create(
         started=timezone.now(),

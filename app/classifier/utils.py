@@ -1,4 +1,3 @@
-import json
 import sys
 import unicodedata
 
@@ -39,16 +38,21 @@ def get_tokenized_words(text):
     return [stemmer.stem(word.lower()) for word in nltk.word_tokenize(text.translate(tbl), language=settings.CLASSIFIER_LANGUAGE)]
 
 
-def get_categories():
-    categories = Category.objects.all().values_list('title', flat=True)
+def get_categories(qs=None):
+    if qs is None:
+        qs = Category.objects.all()
+    categories = qs.values_list('title', flat=True)
 
     return list(categories)
 
 
-def get_words():
+def get_words(qs=None):
     # Get ordered list of unique words which was used to train model
+    if qs is None:
+        qs = Sentence.objects.all()
+
     words_list = []
-    for sentence in Sentence.objects.all():
+    for sentence in qs:
         words_list.extend(get_tokenized_words(sentence.text))
 
     return sorted(list(set(words_list)))
