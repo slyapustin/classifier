@@ -1,8 +1,7 @@
-from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
+from classifier.models import Train
 from classifier.predict import predict_category
-from classifier.train import train
 
 
 class IndexView(TemplateView):
@@ -15,10 +14,6 @@ class IndexView(TemplateView):
             context['text'] = text
             context['category'] = predict_category(text)
 
+        context['train'] = Train.objects.filter(finished__isnull=False).order_by('finished').first()
+
         return context
-
-
-class TrainView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        train()
-        return redirect('classifier:index')

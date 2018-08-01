@@ -3,3 +3,8 @@ services:
   app:
     ports:
       - "8000:8000"
+    volumes:
+      - ./app/:/usr/src/app/
+  worker:
+    volumes:
+      - ./app/:/usr/src/app/

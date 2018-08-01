@@ -2,13 +2,18 @@ import numpy as np
 import tflearn
 from django.conf import settings
 
-from classifier.utils import get_categories, init_network, get_words, get_tf_record
-
-categories = get_categories()
-words = get_words()
+from classifier.models import Train
+from classifier.utils import init_network, get_tf_record
 
 
 def predict_category(text):
+    train = Train.objects.filter(finished__isnull=False).order_by('finished').first()
+    if not train:
+        return 'You need to train your dragon first'
+
+    categories = train.categories
+    words = train.words
+
     # Define model and setup TensorBoard
     network = init_network(len(words), len(categories))
     model = tflearn.DNN(network)

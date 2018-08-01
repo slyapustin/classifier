@@ -9,6 +9,8 @@ import tflearn
 from django.conf import settings
 from nltk.stem.lancaster import LancasterStemmer
 
+from classifier.models import Category, Sentence
+
 stemmer = LancasterStemmer()
 
 # a table structure to hold the different punctuation used
@@ -38,21 +40,16 @@ def get_tokenized_words(text):
 
 
 def get_categories():
-    with open(settings.CLASSIFIER_DATA_SET) as json_data:
-        data = json.load(json_data)
+    categories = Category.objects.all().values_list('title', flat=True)
 
-    return list(data.keys())
+    return list(categories)
 
 
 def get_words():
     # Get ordered list of unique words which was used to train model
     words_list = []
-    with open(settings.CLASSIFIER_DATA_SET) as json_data:
-        data = json.load(json_data)
-
-    for category in data.keys():
-        for sentence in data[category]:
-            words_list.extend(get_tokenized_words(sentence))
+    for sentence in Sentence.objects.all():
+        words_list.extend(get_tokenized_words(sentence.text))
 
     return sorted(list(set(words_list)))
 

@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 import os
+from datetime import timedelta
 
 DEBUG = True
 
@@ -15,9 +16,12 @@ ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'sqlite.db'),
-    },
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'db'
+    }
 }
 
 CACHES = {
@@ -142,8 +146,18 @@ INSTALLED_APPS = [
 # https://docs.djangoproject.com/en/2.0/ref/settings/#std:setting-EMAIL_BACKEND
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-
 CLASSIFIER_DATA_SET = os.path.join(BASE_DIR, 'data', 'sample_data.json')
 CLASSIFIER_MODEL_PATH = os.path.join(BASE_DIR, 'model_data', 'tflearn_model', 'model')
-CLASSIFIER_TENSORBOARD_PATH = os.path.join(BASE_DIR, 'model_data', 'tflearn_logs')
 CLASSIFIER_LANGUAGE = 'english'
+
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'amqp://guest:guest@rabbitmq:5672/')
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ENABLE_UTC = True
+
+CELERYBEAT_SCHEDULE = {
+    'classifier_run_train': {
+        'task': 'classifier.tasks.run_train',
+        'schedule': timedelta(minutes=30),
+    }
+}

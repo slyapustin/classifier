@@ -4,26 +4,30 @@ import random
 import numpy as np
 import tflearn
 from django.conf import settings
+from django.utils import timezone
 
+from classifier.models import Sentence, Train
 from classifier.utils import init_network, get_tokenized_words, get_categories, get_words
 
 
 def train():
-    # read the json file and load the training data
-    with open(settings.CLASSIFIER_DATA_SET) as json_data:
-        data = json.load(json_data)
-
     # get a list of all categories to train for
     categories = get_categories()
     words = get_words()
 
+    train_obj = Train.objects.create(
+        started=timezone.now(),
+        data=json.dumps(dict(
+            words=words,
+            categories=categories
+        ), indent=2)
+    )
+
     # a list of tuples with words in the sentence and category name
     docs = []
 
-    for category in categories:
-        for sentence in data[category]:
-            sentence_words = get_tokenized_words(sentence)
-            docs.append((sentence_words, category))
+    for sentence in Sentence.objects.all():
+        docs.append((get_tokenized_words(sentence.text), sentence.category.title))
 
     # create our training data
     training = []
@@ -57,7 +61,10 @@ def train():
     x_size = len(x_inputs[0])
     y_size = len(y_targets[0])
     network = init_network(x_size, y_size)
-    model = tflearn.DNN(network, tensorboard_dir=settings.CLASSIFIER_TENSORBOARD_PATH)
+    model = tflearn.DNN(network)
     # Start training (apply gradient descent algorithm)
     model.fit(x_inputs, y_targets, n_epoch=1000, batch_size=8, show_metric=True)
     model.save(settings.CLASSIFIER_MODEL_PATH)
+
+    train_obj.finished = timezone.now()
+    train_obj.save()

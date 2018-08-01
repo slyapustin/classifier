@@ -8,11 +8,13 @@
   <strong>{{ text }}</strong> is <strong>{{ category }}</strong>
 {% endif %}
 <form>
-  <textarea name="text"></textarea>
+  <label for="text">Enter sentence to classify</label>
+  <br/>
+  <textarea name="text" id="text"></textarea>
   <br/>
   <input type="submit" value="Classify">
 </form>
 
-<a href="{% url 'classifier:train' %}">Re-Train</a>
+Last train finished: {{ train.finished|timesince }} ago
 </body>
 </html>
