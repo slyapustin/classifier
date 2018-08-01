@@ -6,5 +6,3 @@ services:
       "python ./manage.py migrate
         && python ./manage.py train
         && python ./manage.py runserver 0.0.0.0:8000"
-    ports:
-      - "8000:8000"
