@@ -155,7 +155,7 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_ENABLE_UTC = True
 
-CELERYBEAT_SCHEDULE = {
+CELERY_BEAT_SCHEDULE = {
     'classifier_run_train': {
         'task': 'classifier.tasks.run_train',
         'schedule': timedelta(minutes=30),
