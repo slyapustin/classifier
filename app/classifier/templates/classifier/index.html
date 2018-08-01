@@ -8,8 +8,9 @@
   <strong>{{ text }}</strong> is <strong>{{ category }}</strong>
 {% endif %}
 <form>
-  <input type="text" name="text">
-  <input type="submit">
+  <textarea name="text"></textarea>
+  <br/>
+  <input type="submit" value="Classify">
 </form>
 
 <a href="{% url 'classifier:train' %}">Re-Train</a>

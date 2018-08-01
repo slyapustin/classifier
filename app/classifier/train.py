@@ -23,7 +23,6 @@ def train():
     for category in categories:
         for sentence in data[category]:
             sentence_words = get_tokenized_words(sentence)
-            print("tokenized words: ", sentence_words)
             docs.append((sentence_words, category))
 
     # create our training data

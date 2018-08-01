@@ -8,12 +8,11 @@ categories = get_categories()
 words = get_words()
 
 
-# Define model and setup TensorBoard
-network = init_network(len(words), len(categories))
-model = tflearn.DNN(network)
-model.load(settings.CLASSIFIER_MODEL_PATH)
-
-
 def predict_category(text):
+    # Define model and setup TensorBoard
+    network = init_network(len(words), len(categories))
+    model = tflearn.DNN(network)
+    model.load(settings.CLASSIFIER_MODEL_PATH)
+
     tf_record = get_tf_record(words, text)
     return categories[np.argmax(model.predict([tf_record]))]
