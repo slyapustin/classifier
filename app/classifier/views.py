@@ -12,7 +12,7 @@ class IndexView(TemplateView):
         text = self.request.GET.get('text')
         if text:
             context['text'] = text
-            context['category'] = predict_category(text)
+            context['result'] = predict_category(text)
 
         context['train'] = Train.objects.filter(finished__isnull=False).order_by('-finished').first()
 

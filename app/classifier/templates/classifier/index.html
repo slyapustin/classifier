@@ -1,20 +1,38 @@
-<html>
+{% load staticfiles %}
 
+<!doctype html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Classifier</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="{% static 'classifier/css/bootstrap-4.1.2.min.css' %}" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="{% static 'classifier/css/styles.css' %}" rel="stylesheet">
 </head>
 
-<body>
-{% if text %}
-  <strong>{{ text }}</strong> is <strong>{{ category }}</strong>
-{% endif %}
-<form>
-  <label for="text">Enter sentence to classify</label>
-  <br/>
-  <textarea name="text" id="text"></textarea>
-  <br/>
-  <input type="submit" value="Classify">
-</form>
+<body class="text-center">
+<form class="form-signin">
+  <h1 class="h3 mb-3 font-weight-normal">Classifier</h1>
+  {% if result %}
+    {% if result.success %}
+      <p class="mt-5 mb-3 text-muted"><strong>{{ text }}</strong> is <strong>{{ result.message }}</strong></p>
+    {% else %}
+      <p class="mt-5 mb-3 text-muted"><strong>{{ result.message }}</strong></p>
+    {% endif %}
+  {% endif %}
 
-Last train finished: {{ train.finished|timesince }} ago
+  <label for="text" class="sr-only">Enter sentence to classify</label>
+  <input type="text" id="text" name="text" class="form-control" placeholder="Text to classify" required>
+  <br/>
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Classify</button>
+  <p class="mt-5 mb-3 text-muted">Last train finished: {{ train.finished|timesince }} ago</p>
+</form>
 </body>
 </html>
