@@ -22,8 +22,7 @@ services:
     build: ./app
     command: celery -A project worker --loglevel info --concurrency=1 -B
     depends_on:
-      - db
-      - rabbitmq
+      - app
     restart: always
 
 volumes:
