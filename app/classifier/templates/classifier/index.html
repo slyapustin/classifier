@@ -32,7 +32,10 @@
   <input type="text" id="text" name="text" class="form-control" placeholder="Text to classify" required>
   <br/>
   <button class="btn btn-lg btn-primary btn-block" type="submit">Classify</button>
-  <p class="mt-5 mb-3 text-muted">Last train finished: {{ train.finished|timesince }} ago</p>
+  {% if train %}
+    <p class="mt-5 mb-3 text-muted">Last trained: {{ train.finished|timesince }} ago</p>
+  {% endif %}
+  <p class="mt-5 mb-3 text-muted text-center"><a href="https://github.com/inoks/classifier">Fork on GitHub</a></p>
 </form>
 </body>
 </html>
