@@ -1,0 +1,25 @@
+{
+  "name": "Classifier",
+  "description": "Django Tensorflow Classifier",
+  "repository": "https://github.com/inoks/classifier",
+  "keywords": [
+    "django",
+    "tensorflow"
+  ],
+  "env": {
+    "SECRET_KEY": {
+      "description": "A secret key for a particular Django installation.",
+      "generator": "secret"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "addons": [
+    {
+      "plan": "heroku-postgresql"
+    }
+  ]
+}

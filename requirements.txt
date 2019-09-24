@@ -1,5 +1,6 @@
 celery==4.2.1
 django==2.1.5
+django-environ==0.4.5
 h5py==2.9.0
 nltk==3.3
 numpy==1.15.4
@@ -7,3 +8,4 @@ psycopg2-binary==2.7.7
 scipy==1.2.0
 tensorflow==1.12.0
 tflearn==0.3.2
+whitenoise==4.1.3

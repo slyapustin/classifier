@@ -1,8 +1,15 @@
 # -*- coding:utf-8 -*-
 import os
 from datetime import timedelta
+import environ
 
-DEBUG = True
+env = environ.Env(
+        DEBUG=(bool, False),
+        CACHE_URL=(str,  'locmemcache://'),
+        EMAIL_URL=(str, 'consolemail://')
+    )
+
+DEBUG = env('DEBUG')
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -15,19 +22,11 @@ MANAGERS = ADMINS
 ALLOWED_HOSTS = ['*']
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'db'
-    }
+    'default': env.db(),
 }
 
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-    }
+    'default': env.cache()
 }
 
 # Local time zone for this installation. Choices can be found here:
@@ -93,9 +92,10 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '__PUT_SUPER_SECRET_RANDOM_STRING_HERE__'
+SECRET_KEY = env('SECRET_KEY')
 
 MIDDLEWARE = (
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -161,3 +161,5 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': timedelta(minutes=30),
     }
 }
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
