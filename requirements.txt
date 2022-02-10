@@ -1,5 +1,5 @@
 celery==4.2.1
-django==2.2.13
+django==2.2.27
 django-environ==0.4.5
 h5py==2.9.0
 nltk==3.4.5
