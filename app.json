@@ -1,7 +1,7 @@
 {
   "name": "Classifier",
   "description": "Django Tensorflow Classifier",
-  "repository": "https://github.com/inoks/classifier",
+  "repository": "https://github.com/slyapustin/classifier",
   "keywords": [
     "django",
     "tensorflow"
